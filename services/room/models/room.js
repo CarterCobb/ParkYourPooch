@@ -1,6 +1,15 @@
 import mongoose from "mongoose";
 const { model, Schema } = mongoose;
 
+/**
+ * Determines if a booking time array is valid
+ * @param {Array} val string array
+ * @returns {Boolean} if array is greter than 2 or less than 2
+ */
+const arrayLimit = (val) => {
+  return val.length === 2;
+};
+
 const RoomSchema = new Schema({
   number: {
     type: String,
@@ -33,14 +42,5 @@ const RoomSchema = new Schema({
     default: [],
   },
 });
-
-/**
- * Determines if a booking time array is valid
- * @param {Array} val string array
- * @returns {Boolean} if array is greter than 2 or less than 2
- */
-const arrayLimit = (val) => {
-  return val.length === 2;
-};
 
 export default model("ROOM", RoomSchema);
