@@ -85,7 +85,7 @@ The application is targeted towards working professionals or families planning v
 ### Accessible localhost Items
 
 - Front end will be accessible at <http://localhost:7777>
-- Euraka Web Client will be accessible at <http://localhost:8080>
+- Eureka Web Client will be accessible at <http://localhost:8080>
 - Containerized MongoDB data store will be accessible at <http://localhost:8989>
 - Containerized Redis data store will be accessible at <http://localhost:6379>
 
