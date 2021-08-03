@@ -1,0 +1,5 @@
+.env
+node_modules
+mongo_data
+redis_data
+package-lock.json

@@ -1,0 +1,158 @@
+version: "3.9"
+
+services:
+  frontend:
+    container_name: frontend
+    build:
+      context: ./services/client
+      dockerfile: Dockerfile
+    volumes:
+      - ${HOST_PATH}/services/client://usr/src/app
+      - /usr/src/app/node_modules/
+    ports:
+      - 7777:80
+    depends_on:
+      - gateway
+    networks:
+      - park-your-pooch-network
+  gateway: # GATEWAY SERVICE *********************************
+    container_name: gateway
+    restart: always
+    build: 
+      context: ./services/gateway/
+      dockerfile: Dockerfile
+    volumes:
+      - ${HOST_PATH}/services/gateway://usr/src/app
+      - /usr/src/app/node_modules/
+    depends_on:
+      - mongo
+    networks:
+      - park-your-pooch-network
+  pooch-service: # POOCH SERVICE **************************
+    restart: always
+    build:
+      context: ./services/pooch/
+      dockerfile: Dockerfile
+    volumes:
+      - ${HOST_PATH}/services/pooch://usr/src/app
+      - /usr/src/app/node_modules/
+    deploy:
+      mode: replicated
+      replicas: 2
+    links:
+      - mongo
+    depends_on:
+      - mongo
+      - registry
+    networks:
+      - park-your-pooch-network
+  room-service: # ROOM SERVICE ************************
+    restart: always
+    build:
+      context: ./services/room/
+      dockerfile: Dockerfile
+    links:
+      - mongo
+    volumes:
+      - ${HOST_PATH}/services/room://usr/src/app
+      - /usr/src/app/node_modules/
+    deploy:
+      mode: replicated
+      replicas: 2
+    depends_on:
+      - mongo
+      - registry
+    networks:
+      - park-your-pooch-network
+  order-service: # ORDER SERVICE ****************************
+    restart: always
+    build:
+      context: ./services/order/
+      dockerfile: Dockerfile
+    links:
+      - mongo
+    volumes:
+      - ${HOST_PATH}/services/order://usr/src/app
+      - /usr/src/app/node_modules/
+    deploy:
+      mode: replicated
+      replicas: 2
+    depends_on:
+      - mongo
+      - registry
+    networks:
+      - park-your-pooch-network
+  customer-service: # CUSTOMER SERVICE ************************
+    restart: always
+    build:
+      context: ./services/customer/
+      dockerfile: Dockerfile
+    links:
+      - mongo
+    volumes:
+      - ${HOST_PATH}/services/customer://usr/src/app
+      - /usr/src/app/node_modules/
+    deploy:
+      mode: replicated
+      replicas: 2
+    depends_on:
+      - mongo
+      - registry
+    networks:
+      - park-your-pooch-network
+  employee-service: # EMPLOYEE SERVICE ************************
+    restart: always
+    build:
+      context: ./services/employee/
+      dockerfile: Dockerfile
+    links:
+      - mongo
+    volumes:
+      - ${HOST_PATH}/services/employee://usr/src/app
+      - /usr/src/app/node_modules/
+    deploy:
+      mode: replicated
+      replicas: 2
+    depends_on:
+      - mongo
+      - registry
+    networks:
+      - park-your-pooch-network
+  registry: # Netflix Eureka Server **************
+    container_name: registry
+    build:
+      context: ./services/svc-registry/
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+      - "8761:8761"
+    networks:
+      - park-your-pooch-network
+  mongo: # MongoDB ********************************
+    container_name: mongo
+    image: mongo:latest
+    ports:
+      - "8989:27017"
+    volumes:
+      - ${HOST_PATH}/mongo_data://data/db
+    networks:
+      - park-your-pooch-network
+  redis: # Rediis SERVICE *************************
+    image: redis:alpine
+    container_name: redis
+    ports:
+      - 6379:6379
+    expose:
+      - 6379
+    restart: always
+    volumes:
+      - ${HOST_PATH}/redis_data:/data
+    environment:
+      - REDIS_REPLICATION_MODE=master
+    networks:
+      - park-your-pooch-network
+networks: # Network *******************************
+  park-your-pooch-network:
+    name: park-your-pooch-network
+    external: false
+    driver: bridge
