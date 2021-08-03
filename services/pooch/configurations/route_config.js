@@ -1,5 +1,5 @@
 import Express from "express";
-import pooch from "../routes/pooch";
+import pooch from "../routes/pooch.js";
 
 /**
  * Constructs routes from the imported object lists.
