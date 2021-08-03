@@ -38,7 +38,7 @@ export default class ConfigDatabase {
       } catch (error) {
         console.warn("Customer collection aready created");
       }
-      console.log(`[${process.pid}] Connected to MongoDB: ${connection.host}`);
+      console.log(`[${process.pid}] Connected to MongoDB`);
     });
   }
 }
