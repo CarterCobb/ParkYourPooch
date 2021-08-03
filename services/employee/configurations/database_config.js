@@ -1,4 +1,3 @@
-import Express from "express";
 import mongoose from "mongoose";
 const { connect, connection } = mongoose;
 import Employee from "../models/employee.js";
@@ -9,17 +8,9 @@ import { MONGO_URL } from "../keys.js";
  */
 export default class ConfigDatabase {
   /**
-   * @param {Express.Application} instance
-   */
-  constructor(instance) {
-    this.app = instance;
-    this.connectToMongoose();
-  }
-
-  /**
    * Connects to MongoDB
    */
-  connectToMongoose() {
+  static connect() {
     try {
       connect(MONGO_URL, {
         useNewUrlParser: true,

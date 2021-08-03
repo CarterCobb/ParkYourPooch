@@ -7,24 +7,15 @@ import order from "../routes/order.js";
  */
 export default class RouteConf {
   /**
-   * Constructs and assigns the routes to the app instance
-   * @param {Express.Application} instance
+   * Constructs routes and registers them to the app.
+   *  @param {Express.Application} app
    */
-  constructor(instance) {
-    this.app = instance;
-    this.app.get("/", (_req, res) =>
+  static registerTo(app) {
+    app.get("/", (_req, res) =>
       res.status(200).json({ message: "Server Opperational" })
     );
-    this.configureRoutes(order);
-  }
-
-  /**
-   * Constructs routes and assigns them to the app.
-   * @param {Array} routes
-   */
-  configureRoutes(routes) {
-    routes.forEach((route) =>
-      this.app[route.type].bind(this.app)(route.url, ...route.handlers)
+    order.forEach((route) =>
+      app[route.type].bind(app)(route.url, ...route.handlers)
     );
   }
 }

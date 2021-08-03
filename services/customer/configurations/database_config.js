@@ -1,4 +1,3 @@
-import Express from "express";
 import mongoose from "mongoose";
 const { connect, connection } = mongoose;
 import Customer from "../models/customer.js";
@@ -8,18 +7,11 @@ import { MONGO_URL } from "../keys.js";
  * Configures and connects the the MongoDB container
  */
 export default class ConfigDatabase {
-  /**
-   * @param {Express.Application} instance
-   */
-  constructor(instance) {
-    this.app = instance;
-    this.connectToMongoose();
-  }
 
   /**
    * Connects to MongoDB
    */
-  connectToMongoose() {
+  static connect() {
     try {
       connect(MONGO_URL, {
         useNewUrlParser: true,

@@ -3,8 +3,8 @@ import cors from "cors";
 import cluster from "cluster";
 import os from "os";
 import { NODE_ENV } from "./keys.js";
-import DatabaseConf from "./configurations/database_config.js";
-import RouteConf from "./configurations/route_config.js";
+import Database from "./configurations/database_config.js";
+import Routes from "./configurations/route_config.js";
 const cpus = os.cpus().length;
 const app = express();
 
@@ -20,8 +20,8 @@ if (NODE_ENV !== "test" && cluster.isMaster && cpus > 1) {
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
   app.use(express.json({ limit: "50mb" }));
   app.use(cors());
-  new DatabaseConf(app);
-  new RouteConf(app);
+  Database.connect();
+  Routes.registerTo(app);
   app.listen(1000, () =>
     console.log(`[${process.pid}] listening on port 1000`)
   );
