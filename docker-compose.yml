@@ -26,6 +26,8 @@ services:
       - /usr/src/app/node_modules/
     depends_on:
       - mongo
+    ports:
+      - 1000:1000
     networks:
       - park-your-pooch-network
   pooch-service: # POOCH SERVICE **************************
