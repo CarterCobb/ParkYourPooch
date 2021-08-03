@@ -5,6 +5,7 @@ import os from "os";
 import { NODE_ENV } from "./keys.js";
 import Database from "./configurations/database_config.js";
 import Routes from "./configurations/route_config.js";
+import Eureka from "./models/Eureka.js";
 const cpus = os.cpus().length;
 const app = express();
 
@@ -22,6 +23,7 @@ if (NODE_ENV !== "test" && cluster.isMaster && cpus > 1) {
   app.use(cors());
   Database.connect();
   Routes.registerTo(app);
+  Eureka.register("customer-service", 1000);
   app.listen(1000, () =>
     console.log(`[${process.pid}] listening on port 1000`)
   );
