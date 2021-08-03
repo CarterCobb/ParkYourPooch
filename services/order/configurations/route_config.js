@@ -15,7 +15,7 @@ export default class RouteConf {
     this.app.get("/", (_req, res) =>
       res.status(200).json({ message: "Server Opperational" })
     );
-    this.configureRoutes(employee);
+    this.configureRoutes(order);
   }
 
   /**
