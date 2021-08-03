@@ -1,3 +1,4 @@
+import mongoose from "mongoose"
 import Express from "express";
 import Customer from "../models/customer.js";
 import { ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET } from "../keys.js";
@@ -7,7 +8,7 @@ const { connection } = mongoose;
 const { verify, sign } = jwt;
 
 /**
- * Authenticate JWT tokens for request requiring authtication
+ * Authenticate JWT tokens for request requiring authentication
  * @param {Express.Request} req
  * @param {Express.Response} res
  * @param {Express.NextFunction} next
