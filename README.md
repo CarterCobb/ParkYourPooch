@@ -47,12 +47,14 @@ The application is targeted towards working professionals or families planning v
 - add a `.env` file in the root of the `customer` directory (`./services/customer/.env`)
 - .env file keys:
   - NODE_ENV=development
+  - MONGO_URL=mongodb://mongo:27017
 
 ### Employee Microservice Requirements
 
 - add a `.env` file in the root of the `employee` directory (`./services/employee/.env`)
 - .env file keys:
   - NODE_ENV=development
+  - MONGO_URL=mongodb://mongo:27017
 
 ### Gateway Microservice Requirements
 
@@ -65,18 +67,21 @@ The application is targeted towards working professionals or families planning v
 - add a `.env` file in the root of the `order` directory (`./services/order/.env`)
 - .env file keys:
   - NODE_ENV=development
+  - MONGO_URL=mongodb://mongo:27017
 
 ### Pooch Microservice Requirements
 
 - add a `.env` file in the root of the `pooch` directory (`./services/pooch/.env`)
 - .env file keys:
   - NODE_ENV=development
+  - MONGO_URL=mongodb://mongo:27017
 
 ### Room Microservice Requirements
 
 - add a `.env` file in the root of the `room` directory (`./services/room/.env`)
 - .env file keys:
   - NODE_ENV=development
+  - MONGO_URL=mongodb://mongo:27017
 
 ## Run
 
