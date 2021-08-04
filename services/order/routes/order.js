@@ -100,7 +100,7 @@ export default [
    */
   {
     url: "/api/order/:id",
-    type: "deelte",
+    type: "delete",
     handlers: [
       authenticate,
       async (req, res) => {
