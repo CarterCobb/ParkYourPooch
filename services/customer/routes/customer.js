@@ -52,7 +52,7 @@ export default [
               const pooch_client = await Eureka.getClientByName(
                 "pooch-service"
               );
-              const full_pooch = await pooch_client.get(`/pooch/${pooch}`).data
+              const full_pooch = await pooch_client.get(`/api/pooch/${pooch}`).data
                 .pooch;
               pooches.push(full_pooch);
             }
