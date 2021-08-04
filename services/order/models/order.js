@@ -1,6 +1,22 @@
 import mongoose from "mongoose";
 const { model, Schema } = mongoose;
 
+const valid_card = (value) => {
+  if (!value || /[^0-9-\s]+/.test(value)) return false;
+  var nCheck = 0,
+    nDigit = 0,
+    bEven = false;
+  value = value.replace(/\D/g, "");
+  for (var n = value.length - 1; n >= 0; n--) {
+    var cDigit = value.charAt(n),
+      nDigit = parseInt(cDigit, 10);
+    if (bEven) if ((nDigit *= 2) > 9) nDigit -= 9;
+    nCheck += nDigit;
+    bEven = !bEven;
+  }
+  return nCheck % 10 == 0;
+};
+
 const OrderSchema = new Schema(
   {
     name: {
@@ -10,6 +26,7 @@ const OrderSchema = new Schema(
     card_number: {
       type: Number,
       required: [true, "'card_number' is a required attribute of order"],
+      validate: [valid_card, "'card_number' is invalid"],
     },
     cvv: {
       type: Number,
