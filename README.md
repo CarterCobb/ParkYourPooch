@@ -80,6 +80,7 @@ The application is targeted towards working professionals or families planning v
 - .env file keys:
   - NODE_ENV=development
   - MONGO_URL=mongodb://mongo:27017
+  - ACCESS_TOKEN_SECRET=yzQnI8Y2lGxrvNe6TObEt53HDDapxnBTuvts58dL
 
 ### Room Microservice Requirements
 
