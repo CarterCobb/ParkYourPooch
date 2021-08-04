@@ -6,6 +6,7 @@ const EmployeeSchema = new Schema({
   ...(NODE_ENV === "test" ? { _id: Number } : {}),
   name: {
     type: String,
+    index: true,
     required: [true, "'name' is a required attribute of employee"],
   },
   password: {
