@@ -81,10 +81,7 @@ describe("Unit Testing -> Customers", () => {
       .get("/api/customers")
       .set({ authorization: `Bearer ${token}` })
       .then((res) => {
-        expect(res.body.customers).to.be.an.instanceof(
-          Array,
-          `[${res.status}] - ${JSON.stringify(res.body)}`
-        );
+        expect(res.body.customers).to.be.an.instanceof(Array);
         assert.strictEqual(res.status, 200);
         done();
       })
