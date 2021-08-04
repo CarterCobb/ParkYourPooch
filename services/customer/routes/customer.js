@@ -6,6 +6,7 @@ import {
   generateAccessToken,
   generateRefreshToken,
 } from "../authentication/authenticate.js";
+import { NODE_ENV } from "../keys.js";
 import bcrypt from "bcryptjs";
 const { connection } = mongoose;
 
@@ -18,7 +19,7 @@ export default [
     type: "get",
     handlers: [
       authenticate,
-      async (_req, res) => {
+      async (req, res) => {
         try {
           if (req.user.role === "CUSTOMER")
             return res.status(403).json({ error: "employee only route" });
@@ -42,9 +43,10 @@ export default [
       async (req, res) => {
         try {
           if (connection.readyState === 1) {
-            const customer = await Customer.findById(req.params.id);
+            const customer = await Customer.findById(req.params.id).lean();
             if (!customer)
               return res.status(404).json({ error: "customer not found" });
+            if (NODE_ENV === "test") return res.status(200).json({ customer });
             const pooches = [];
             for (var pooch of customer.pooches) {
               const pooch_client = await Eureka.getClientByName(
@@ -88,19 +90,25 @@ export default [
    * Update all or part of the customer object
    */
   {
-    url: "/api/customer/:id",
+    url: "/api/customer",
     type: "patch",
     handlers: [
       authenticate,
       async (req, res) => {
         try {
           if (connection.readyState === 1) {
-            const update = { ...req.user, ...req.body };
+            const update = {
+              ...req.user,
+              ...req.body,
+              ...(req.body.password && {
+                password: bcrypt.hashSync(req.body.password),
+              }),
+            };
             const updated_customer = await Customer.findOneAndUpdate(
               { _id: req.user._id },
               { $set: { ...update } },
               { upsert: false, new: true, runValidators: true }
-            );
+            ).lean();
             return res.status(200).json({ customer: updated_customer });
           } else return res.status(500).json({ error: "Database Error" });
         } catch (err) {
@@ -114,7 +122,7 @@ export default [
    */
   {
     url: "/api/customer/pooch/:pooch",
-    type: "patch",
+    type: "put",
     handlers: [
       authenticate,
       async (req, res) => {
@@ -181,7 +189,7 @@ export default [
    * Login and get JWT tokens
    */
   {
-    url: "/customer/login",
+    url: "/api/customer/login",
     type: "post",
     handlers: [
       async (req, res) => {
