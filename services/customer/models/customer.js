@@ -1,7 +1,9 @@
 import mongoose from "mongoose";
+import { NODE_ENV } from "../keys.js";
 const { model, Schema } = mongoose;
 
 const CustomerSchema = new Schema({
+  ...(NODE_ENV === "test" ? { _id: Number } : {}),
   name: {
     type: String,
     required: [true, "'name' is a required attribute of customer"],
@@ -11,6 +13,7 @@ const CustomerSchema = new Schema({
     lowercase: true,
     required: [true, "'email' is a required attribute of customer"],
     unique: true,
+    index: true,
     validate: {
       validator: (value) => {
         return Model.find({ email: value }).exec((err, users) => {

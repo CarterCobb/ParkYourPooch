@@ -23,7 +23,7 @@ if (NODE_ENV !== "test" && cluster.isMaster && cpus > 1) {
   app.use(cors());
   Database.connect();
   Routes.registerTo(app);
-  Eureka.register("customer-service", 1000);
+  if (NODE_ENV !== "test") Eureka.register("customer-service", 1000);
   app.listen(1000, () =>
     console.log(`[${process.pid}] listening on port 1000`)
   );

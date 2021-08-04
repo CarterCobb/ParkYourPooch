@@ -1,7 +1,12 @@
-import mongoose from "mongoose"
+import mongoose from "mongoose";
 import Express from "express";
 import Customer from "../models/customer.js";
-import { ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET } from "../keys.js";
+import {
+  ACCESS_TOKEN_SECRET,
+  REFRESH_TOKEN_SECRET,
+  NODE_ENV,
+  TEST_CUSTOMER,
+} from "../keys.js";
 import Eureka from "../models/Eureka.js";
 import jwt from "jsonwebtoken";
 const { connection } = mongoose;
@@ -15,7 +20,7 @@ const { verify, sign } = jwt;
  */
 export const authenticate = (req, res, next) => {
   try {
-    const { authorization, login } = req.headers;
+    const { authorization } = req.headers;
     const token = authorization && authorization.split(" ")[1];
     if (token === null || token === undefined)
       return res.status(403).json({ error: "no token" });
@@ -26,17 +31,22 @@ export const authenticate = (req, res, next) => {
         });
       if (connection.readyState === 1) {
         if (data.role === "CUSTOMER") {
-          const customer = await Customer.findById(data.id);
+          const customer = await Customer.findById(data.id).lean();
           req.user = customer;
           next();
         } else {
-          const employeeClient = await Eureka.getClientByName(
-            "employee-service"
-          );
-          const employee = await employeeClient.get(`/employee/${data.id}`).data
-            .employee;
-          req.user = employee;
-          next();
+          if (NODE_ENV === "test") {
+            req.user = TEST_CUSTOMER;
+            next();
+          } else {
+            const employeeClient = await Eureka.getClientByName(
+              "employee-service"
+            );
+            const employee = await employeeClient.get(`/employee/${data.id}`)
+              .data.employee;
+            req.user = employee;
+            next();
+          }
         }
       } else return res.status(500).json({ error: "Server Error" });
     });

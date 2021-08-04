@@ -1,19 +1,18 @@
 import mongoose from "mongoose";
 const { connect, connection } = mongoose;
 import Customer from "../models/customer.js";
-import { MONGO_URL } from "../keys.js";
+import { MONGO_URL, NODE_ENV } from "../keys.js";
 
 /**
  * Configures and connects the the MongoDB container
  */
 export default class ConfigDatabase {
-
   /**
    * Connects to MongoDB
    */
   static connect() {
     try {
-      connect(MONGO_URL, {
+      connect(NODE_ENV === "test" ? "mongodb://localhost:27017" : MONGO_URL, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
         useFindAndModify: false,
