@@ -9,7 +9,7 @@ import {
 import Eureka from "../models/Eureka.js";
 import jwt from "jsonwebtoken";
 const { connection } = mongoose;
-const { verify } = jwt;
+const { verify, sign } = jwt;
 
 /**
  * Authenticate JWT tokens for request requiring authentication
@@ -63,4 +63,12 @@ export const authenticate = (req, res, next) => {
   } catch (err) {
     return res.status(500).json({ error: `error: ${err}` });
   }
+};
+
+/**
+ * Generates the JWT token
+ * @param {Object} data
+ */
+export const generateAccessToken = (data) => {
+  return sign(data, ACCESS_TOKEN_SECRET, { expiresIn: "1h" });
 };
