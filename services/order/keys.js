@@ -5,6 +5,8 @@ config();
 export const NODE_ENV = process.env.NODE_ENV;
 // MongoDB
 export const MONGO_URL = process.env.MONGO_URL;
+// JWT
+export const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET;
 // Test Data
 export const TEST_CUSTOMER = {
   _id: 12345,
