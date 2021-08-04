@@ -20,7 +20,7 @@ export default [
       async (_req, res) => {
         try {
           if (connection.readyState === 1) {
-            const employees = await Employee.fin().lean();
+            const employees = await Employee.find().lean();
             return res.status(200).json({ employees });
           } else return res.status(500).json({ error: "Database Error" });
         } catch (err) {
@@ -133,7 +133,7 @@ export default [
       async (req, res) => {
         try {
           if (connection.readyState === 1) {
-            const employee = await Employee.findOne({ email: req.body.email });
+            const employee = await Employee.findOne({ name: req.body.name });
             if (!employee)
               return res.status(404).json({ error: "no employee found" });
             if (!bcrypt.compareSync(req.body.password, employee.password))
