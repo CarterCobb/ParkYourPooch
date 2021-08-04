@@ -5,7 +5,7 @@ import {
   ACCESS_TOKEN_SECRET,
   REFRESH_TOKEN_SECRET,
   NODE_ENV,
-  TEST_CUSTOMER,
+  TEST_EMPLOYEE,
 } from "../keys.js";
 import Eureka from "../models/Eureka.js";
 import jwt from "jsonwebtoken";
@@ -36,7 +36,7 @@ export const authenticate = (req, res, next) => {
           next();
         } else {
           if (NODE_ENV === "test") {
-            req.user = TEST_CUSTOMER;
+            req.user = TEST_EMPLOYEE;
             next();
           } else {
             const employeeClient = await Eureka.getClientByName(
