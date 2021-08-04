@@ -41,10 +41,6 @@ export default [
     handlers: [
       async (req, res) => {
         try {
-          if (req.user.role === "CUSTOMER" && req.user._id !== req.params.id)
-            return rs
-              .status(403)
-              .json({ error: "Cannot access other customers" });
           if (connection.readyState === 1) {
             const customer = await Customer.findById(req.params.id);
             if (!customer)
