@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { NODE_ENV } from "../keys.js";
 const { model, Schema } = mongoose;
 
 /**
@@ -11,6 +12,7 @@ const arrayLimit = (val) => {
 };
 
 const RoomSchema = new Schema({
+  ...(NODE_ENV === "test" ? { _id: Number } : {}),
   number: {
     type: String,
     required: [true, "'number' is a required attribute of room"],
