@@ -2,6 +2,11 @@ import mongoose from "mongoose";
 import { NODE_ENV } from "../keys.js";
 const { model, Schema } = mongoose;
 
+/**
+ * Validate using the Luhn Algorithm
+ * @param {String} value card number as a string
+ * @returns {boolean} if valid
+ */
 const valid_card = (value) => {
   if (!value || /[^0-9-\s]+/.test(value)) return false;
   var nCheck = 0,
@@ -18,6 +23,26 @@ const valid_card = (value) => {
   return nCheck % 10 == 0;
 };
 
+/**
+ * Validates a future date
+ * @param {String} expires date string MM/YY
+ * @returns {boolean} if valid
+ */
+const valid_date = (expires) => {
+  try {
+    const date = new Date();
+    return (
+      expires &&
+      /^\d{1,2}\/\d{2}$/.test(expires) &&
+      parseInt(expires.split("/")[0]) >= date.getMonth() &&
+      parseInt(expires.split("/")[1]) >=
+        parseInt(date.getFullYear().toString().substr(2, 2))
+    );
+  } catch {
+    return false;
+  }
+};
+
 const OrderSchema = new Schema(
   {
     ...(NODE_ENV === "test" ? { _id: Number } : {}),
@@ -28,7 +53,7 @@ const OrderSchema = new Schema(
     card_number: {
       type: Number,
       required: [true, "'card_number' is a required attribute of order"],
-      validate: [valid_card, "'card_number' is invalid"],
+      validate: [(val) => valid_card(`${val}`), "'card_number' is invalid"],
     },
     cvv: {
       type: Number,
@@ -37,6 +62,9 @@ const OrderSchema = new Schema(
     expires: {
       type: String,
       required: [true, "'expires' is a required attibute of order"],
+      validate: [valid_date, "'expires' is invalid"],
+      maxLength: [5, "'expires' cannot exceed five characters"],
+      minLength: [5, "'expires' cannot contain less than five characters"],
     },
     total: {
       type: Number,
