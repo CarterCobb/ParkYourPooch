@@ -90,6 +90,14 @@ The application is targeted towards working professionals or families planning v
   - MONGO_URL=mongodb://mongo:27017
   - ACCESS_TOKEN_SECRET=yzQnI8Y2lGxrvNe6TObEt53HDDapxnBTuvts58dL
 
+### API Gateway Service Requirements
+
+- add a `.env` file in the root of the `gateway` directory (`./services/gateway/.env`)
+- .env file keys:
+  - NODE_ENV=development
+  - ACCESS_TOKEN_SECRET=yzQnI8Y2lGxrvNe6TObEt53HDDapxnBTuvts58dL
+  - REFRESH_TOKEN_SECRET=FNrNvfYraHCdPWC2qV2dfbgXoD3d1rKxeZ8VjSiA
+
 ## Run
 
 - Simply run `docker-compose up -d --build` in the terminal on the root directory
