@@ -20,11 +20,11 @@ const RoomSchema = new Schema({
   bookings: {
     type: [
       {
-        pooch_id: {
+        pooch: {
           type: String,
           required: [
             true,
-            "'bookings[~].pooch_id' is a required attribute of room",
+            "'bookings[~].pooch' is a required attribute of room",
           ],
         },
         time: {
