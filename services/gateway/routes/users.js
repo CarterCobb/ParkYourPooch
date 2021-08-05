@@ -1,5 +1,24 @@
 import Eureka from "../models/Eureka.js";
 import ResBody from "../models/ResBody.js";
+import jwt from "jsonwebtoken";
+import { ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET } from "../keys.js";
+
+const { verify, sign } = jwt;
+/**
+ * Generates the JWT token
+ * @param {Object} data
+ */
+export const generateAccessToken = (data) => {
+  return sign(data, ACCESS_TOKEN_SECRET, { expiresIn: "1h" });
+};
+
+/**
+ * Generates the refresh JWT token
+ * @param {Object} data
+ */
+export const generateRefreshToken = (data) => {
+  return sign(data, REFRESH_TOKEN_SECRET, { expiresIn: "3h" });
+};
 
 export default [
   /**
@@ -88,6 +107,36 @@ export default [
           return res
             .status(401)
             .json(ResBody.errorJSON(401, { message: "failed to login" }));
+        } catch (error) {
+          return res.status(500).json(ResBody.errorJSON(500, error));
+        }
+      },
+    ],
+  },
+  /**
+   * Validates refresh token and generates a new pair of tokens.
+   */
+  {
+    url: "/api/v1/token",
+    type: "get",
+    handlers: [
+      async (req, res) => {
+        try {
+          const { authorization } = req.headers;
+          const token = authorization && authorization.split(" ")[1];
+          if (token === null || token === undefined)
+            return res
+              .status(401)
+              .json(ResBody.errorJSON(401, { error: "no token" }));
+          verify(token, REFRESH_TOKEN_SECRET, (err, data) => {
+            if (err) return res.status(500).json(ResBody.errorJSON(500, err));
+            return res.status(200).json({
+              _embedded: {
+                token: generateAccessToken(data),
+                refresh_token: generateRefreshToken(data),
+              },
+            });
+          });
         } catch (error) {
           return res.status(500).json(ResBody.errorJSON(500, error));
         }
