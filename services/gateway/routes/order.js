@@ -64,7 +64,7 @@ export default [
     ],
   },
   /**
-   * Create/Register an order
+   * Create an order
    */
   {
     url: "/api/v1/order",
