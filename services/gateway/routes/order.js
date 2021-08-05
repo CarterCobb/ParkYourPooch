@@ -12,9 +12,7 @@ export default [
     handlers: [
       async (req, res) => {
         try {
-          const orderClient = await Eureka.getClientByName(
-            "order-service"
-          );
+          const orderClient = await Eureka.getClientByName("order-service");
           const items = await orderClient.get("/orders", {
             headers: { ...req.headers },
           });
@@ -42,9 +40,7 @@ export default [
     handlers: [
       async (req, res) => {
         try {
-          const orderClient = await Eureka.getClientByName(
-            "order-service"
-          );
+          const orderClient = await Eureka.getClientByName("order-service");
           const item = await orderClient.get(`/order/${req.params.id}`);
           if (!item.data.order)
             return res
@@ -76,9 +72,7 @@ export default [
     handlers: [
       async (req, res) => {
         try {
-          const orderClient = await Eureka.getClientByName(
-            "order-service"
-          );
+          const orderClient = await Eureka.getClientByName("order-service");
           const item = await orderClient.post("/order", {
             data: JSON.stringify(req.body),
             headers: { "Content-Type": "application/json" },
@@ -98,15 +92,13 @@ export default [
    * Update all or part of the order object
    */
   {
-    url: "/api/v1/order",
+    url: "/api/v1/order/:id",
     type: "patch",
     handlers: [
       async (req, res) => {
         try {
-          const orderClient = await Eureka.getClientByName(
-            "order-service"
-          );
-          const item = await orderClient.patch("/order", {
+          const orderClient = await Eureka.getClientByName("order-service");
+          const item = await orderClient.patch(`/order/${req.params.id}`, {
             data: JSON.stringify(req.body),
             headers: { ...req.headers },
           });
@@ -135,15 +127,13 @@ export default [
    * Delete an order
    */
   {
-    url: "/api/v1/order",
+    url: "/api/v1/order/:id",
     type: "delete",
     handlers: [
       async (req, res) => {
         try {
-          const orderClient = await Eureka.getClientByName(
-            "order-service"
-          );
-          const item = await orderClient.delete("/order", {
+          const orderClient = await Eureka.getClientByName("order-service");
+          const item = await orderClient.delete(`/order/${req.params.id}`, {
             headers: { ...req.headers },
           });
           if (item.status !== 204)
