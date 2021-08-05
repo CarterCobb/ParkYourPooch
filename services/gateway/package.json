@@ -17,6 +17,7 @@
     "express": "^4.17.1",
     "express-redis-cache": "^1.1.3",
     "ip": "^1.1.5",
+    "jsonwebtoken": "^8.5.1",
     "resilient": "^0.4.0"
   },
   "devDependencies": {
