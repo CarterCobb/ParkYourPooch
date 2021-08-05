@@ -5,6 +5,7 @@ import employee from "../routes/employee.js";
 import order from "../routes/order.js";
 import pooch from "../routes/pooch.js";
 import room from "../routes/room.js";
+import users from "../routes/users.js";
 import { NODE_ENV } from "../keys.js";
 const cache = redis({
   host: NODE_ENV === "test" ? "localhost" : "redis",
@@ -43,8 +44,9 @@ export default class RouteConf {
     app.get("/", (_req, res) =>
       res.status(200).json({ message: "Server Opperational" })
     );
-    [...customer, ...employee, ...order, ...pooch, ...room].forEach((route) =>
-      app[route.type].bind(app)(route.url, ...RouteConf.cacheHandlers(route))
+    [...customer, ...employee, ...order, ...pooch, ...room, ...users].forEach(
+      (route) =>
+        app[route.type].bind(app)(route.url, ...RouteConf.cacheHandlers(route))
     );
   }
 }
