@@ -23,7 +23,7 @@ export const authenticate = (req, res, next) => {
     const { authorization } = req.headers;
     const token = authorization && authorization.split(" ")[1];
     if (token === null || token === undefined)
-      return res.status(403).json({ error: "no token" });
+      return res.status(401).json({ error: "no token" });
     verify(token, ACCESS_TOKEN_SECRET, async (err, data) => {
       if (err)
         return res.status(403).json({
