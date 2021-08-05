@@ -124,10 +124,10 @@ export default [
         try {
           if (connection.readyState === 1) {
             const updated_room = await Room.findOneAndUpdate(
-              { _id: res.params.id },
+              { _id: req.params.id },
               { $push: { bookings: req.body } },
               { upsert: false, new: true, runValidators: true }
-            );
+            ).lean();
             return res.status(200).json({ room: updated_room });
           } else return res.status(500).json({ error: "Database Error" });
         } catch (err) {
@@ -156,7 +156,7 @@ export default [
               return res.status(404).json({ error: "no pooch found" });
             const updated_room = await Room.findOneAndUpdate(
               { _id: req.params.id },
-              { $pull: { booings: pooch } },
+              { $pull: { bookings: pooch } },
               { upsert: false, new: true, runValidators: true }
             );
             return res.status(200).json({ room: updated_room });
