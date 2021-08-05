@@ -27,20 +27,9 @@ export default class RouteConf {
     return [
       route.cache && route.type === "get"
         ? cache.route(route.url.split("/")[1].replace(/:[\w\s]*/gi, ""))
-        : (_req, res, next) =>
-            cache.del(
-              route.url.split("/")[1].replace(/:[\w\s]*/gi, ""),
-              (err, deleted) => {
-                if (err || !deleted)
-                  return res.status(500).json({
-                    _embedded: {
-                      message: "Failed to delete Redis item",
-                      status: 500,
-                      code: "CACHE_ERROR",
-                    },
-                  });
-                else return next();
-              }
+        : (_req, _res, next) =>
+            cache.del(route.url.split("/")[1].replace(/:[\w\s]*/gi, ""), () =>
+              next()
             ),
       ...route.handlers,
     ];
