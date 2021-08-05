@@ -51,6 +51,17 @@ export default [
     ],
   },
   /**
+   * Get employee from JWT token
+   */
+  {
+    url: "/api/employee",
+    type: "get",
+    handlers: [
+      authenticate,
+      (req, res) => res.status(200).json({ customer: req.user }),
+    ],
+  },
+  /**
    * Create/Register an employee
    */
   {

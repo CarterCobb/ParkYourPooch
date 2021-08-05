@@ -65,6 +65,17 @@ export default [
     ],
   },
   /**
+   * Get customer from JWT token
+   */
+  {
+    url: "/api/customer",
+    type: "get",
+    handlers: [
+      authenticate,
+      (req, res) => res.status(200).json({ customer: req.user }),
+    ],
+  },
+  /**
    * Create/Register a customer
    */
   {
