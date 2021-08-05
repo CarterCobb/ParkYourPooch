@@ -33,7 +33,6 @@ export default [
     url: "/api/pooch/:id",
     type: "get",
     handlers: [
-      authenticate,
       async (req, res) => {
         try {
           if (connection.readyState === 1) {
