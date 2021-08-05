@@ -94,6 +94,17 @@ The application is targeted towards working professionals or families planning v
 
 - Simply run `docker-compose up -d --build` in the terminal on the root directory
 
+To add an employee to test with:
+
+```shell
+db.employee.insert(
+  {
+    name: "admin",
+    password: "$2a$10$sCZid8ACGmCmrV0pGOXNOuDwMyU8jOQfG9vefZmf69KfmYs..i9Re",
+    role: "EMPLOYEE"
+  })
+```
+
 ### Accessible localhost Items
 
 - Front end will be accessible at <http://localhost:7777>
