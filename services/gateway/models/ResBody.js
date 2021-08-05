@@ -10,6 +10,8 @@ export default class ResBody {
    */
   static errorJSON(status, error) {
     switch (status) {
+      case 400:
+        return ResBody.BAD_REQUEST(error);
       case 401:
         return ResBody.UN_AUTHENTICATED_401(error);
       case 403:
@@ -32,6 +34,22 @@ export default class ResBody {
         error: "server error",
         code: 500,
         type: "SERVER_ERROR",
+        message: error.message,
+      },
+    };
+  }
+
+  /**
+   * General Server errors
+   * @param {Object} error error object
+   * @returns {Object} JSON object
+   */
+  static BAD_REQUEST(error) {
+    return {
+      _embedded: {
+        error: "bad request",
+        code: 400,
+        type: "BAD_REQUEST",
         message: error.message,
       },
     };
