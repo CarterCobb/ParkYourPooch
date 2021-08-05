@@ -132,10 +132,10 @@ export default [
     ],
   },
   /**
-   * Delete a employee
+   * Delete an employee
    */
   {
-    url: "/api/v1/employee",
+    url: "/api/v1/employee/:id",
     type: "delete",
     handlers: [
       async (req, res) => {
@@ -143,9 +143,12 @@ export default [
           const employeeClient = await Eureka.getClientByName(
             "employee-service"
           );
-          const item = await employeeClient.delete("/employee", {
-            headers: { ...req.headers },
-          });
+          const item = await employeeClient.delete(
+            `/employee/${req.params.id}`,
+            {
+              headers: { ...req.headers },
+            }
+          );
           if (item.status !== 204)
             return res
               .status(item.status)
