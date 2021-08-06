@@ -81,32 +81,41 @@ export default [
     handlers: [
       async (req, res) => {
         try {
-          const customerClient = await Eureka.getClientByName(
-            "customer-service"
-          );
-          const customer_item = await customerClient.get("/customer", {
-            data: JSON.stringify(req.body),
-            headers: { ...req.headers },
-          });
-          if (customer_item.status !== 200) {
-            const employeeClient = await Eureka.getClientByName(
-              "employee-service"
-            );
-            const employee_item = await employeeClient.get("/employee", {
-              headers: { ...req.headers },
-            });
-            if (employee_item.status === 200)
-              return res.status(employee_item.status).json({
-                _embedded: { user: employee_item.data.employee },
+          const { authorization } = req.headers;
+          const token = authorization && authorization.split(" ")[1];
+          if (token === null || token === undefined)
+            return res
+              .status(401)
+              .json(ResBody.errorJSON(401, { error: "no token" }));
+          verify(token, ACCESS_TOKEN_SECRET, async (err, data) => {
+            if (err) return res.status(500).json(ResBody.errorJSON(500, err));
+            if (data.role === "CUSTOMER") {
+              const customerClient = await Eureka.getClientByName(
+                "customer-service"
+              );
+              const customer_item = await customerClient.get("/customer", {
+                headers: { ...req.headers },
               });
-          } else {
-            return res.status(customer_item.status).json({
-              _embedded: { user: customer_item.data.customer },
-            });
-          }
-          return res
-            .status(401)
-            .json(ResBody.errorJSON(401, { message: "failed to login" }));
+              if (customer_item.status === 200)
+                return res.status(customer_item.status).json({
+                  _embedded: { user: customer_item.data.customer },
+                });
+            } else {
+              const employeeClient = await Eureka.getClientByName(
+                "employee-service"
+              );
+              const employee_item = await employeeClient.get("/employee", {
+                headers: { ...req.headers },
+              });
+              if (employee_item.status === 200)
+                return res.status(employee_item.status).json({
+                  _embedded: { user: employee_item.data.employee },
+                });
+            }
+            return res
+              .status(401)
+              .json(ResBody.errorJSON(401, { message: "failed to login" }));
+          });
         } catch (error) {
           return res.status(500).json(ResBody.errorJSON(500, error));
         }
@@ -132,8 +141,11 @@ export default [
             if (err) return res.status(500).json(ResBody.errorJSON(500, err));
             return res.status(200).json({
               _embedded: {
-                token: generateAccessToken(data),
-                refresh_token: generateRefreshToken(data),
+                token: generateAccessToken({ id: data.id, role: data.role }),
+                refresh_token: generateRefreshToken({
+                  id: data.id,
+                  role: data.role,
+                }),
               },
             });
           });
