@@ -58,7 +58,6 @@ const Login = ({ size, className }) => {
             <Input
               prefix={<MailOutlined />}
               placeholder="Email"
-              type="email"
               size="large"
             />
           </Form.Item>
