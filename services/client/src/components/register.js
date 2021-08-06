@@ -1,6 +1,8 @@
 import React, { useState, Fragment } from "react";
-import { Button, Modal, Form, Input } from "antd";
+import { Button, Modal, Form, Input, message } from "antd";
 import { MailOutlined, LockOutlined, UserOutlined } from "@ant-design/icons";
+import Customer from "../api/customer";
+import User from "../api/user";
 
 const Register = ({ size, className }) => {
   const [open, setOpen] = useState(false);
@@ -10,9 +12,30 @@ const Register = ({ size, className }) => {
 
   const register = (values) => {
     setLoading(true);
-    console.log(values);
-    toggle(); // Temparary
-    setLoading(false);
+    Customer.register(
+      {
+        name: values.name,
+        email: values.email,
+        password: values.password,
+        role: "CUSTOMER",
+        pooches: [],
+      },
+      (err) => {
+        if (err) {
+          setLoading(false);
+          message.error(err.error);
+        } else
+          User.login(
+            { email: values.email, password: values.password },
+            (err) => {
+              if (err) {
+                setLoading(false);
+                message(err.error);
+              } else window.location.href = "/customer/dash";
+            }
+          );
+      }
+    );
   };
 
   return (
