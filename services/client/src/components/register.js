@@ -95,7 +95,7 @@ const Register = ({ size, className }) => {
               size="large"
               loading={loading}
             >
-              Log In
+              Register
             </Button>
           </Form.Item>
         </Form>
