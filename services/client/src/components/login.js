@@ -1,6 +1,7 @@
 import React, { useState, Fragment } from "react";
-import { Button, Modal, Form, Input } from "antd";
+import { Button, Modal, Form, Input, message } from "antd";
 import { MailOutlined, LockOutlined } from "@ant-design/icons";
+import User from "../api/user";
 
 const Login = ({ size, className }) => {
   const [open, setOpen] = useState(false);
@@ -10,9 +11,24 @@ const Login = ({ size, className }) => {
 
   const login = (values) => {
     setLoading(true);
-    console.log(values);
-    toggle(); // Temparary
-    setLoading(false);
+    const emailVal = new RegExp(
+      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+    );
+    User.login(
+      {
+        [emailVal.test(values.email) ? "email" : "name"]: values.email,
+        password: values.password,
+      },
+      (err) => {
+        if (err) {
+          message.error(err.error);
+          setLoading(false);
+        } else
+          emailVal.test(values.email)
+            ? (window.location.href = "/customer/dash")
+            : (window.location.href = "/employee/dash");
+      }
+    );
   };
 
   return (
