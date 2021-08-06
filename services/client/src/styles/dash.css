@@ -1,0 +1,15 @@
+.portal-sider {
+  margin-top: 112px;
+  min-height: calc(100vh - 112px);
+}
+
+.portal-main-content {
+  margin-top: 112px;
+  padding: 20px;
+}
+
+.portal-menu-item {
+  height: 75px !important;
+  font-size: x-large;
+  font-weight: 600;
+}
