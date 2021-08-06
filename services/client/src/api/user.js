@@ -43,7 +43,7 @@ export default class User {
           const get2 = await axios.get(`${api}/user`, {
             headers: { Authorization: `Bearer ${token}` },
           });
-          if (!get2.data_embedded.user) return cb(null, get2.data._embedded);
+          if (!get2.data._embedded.user) return cb(null, get2.data._embedded);
           cb(get2.data._embedded.user, null);
         } catch (error) {
           cb(null, { error: error.message });

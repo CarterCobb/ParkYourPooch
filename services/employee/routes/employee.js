@@ -58,7 +58,7 @@ export default [
     type: "get",
     handlers: [
       authenticate,
-      (req, res) => res.status(200).json({ customer: req.user }),
+      (req, res) => res.status(200).json({ employee: req.user }),
     ],
   },
   /**
