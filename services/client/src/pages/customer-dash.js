@@ -3,13 +3,16 @@ import { Layout, Menu, Button } from "antd";
 import User from "../api/user";
 import { FaDog, FaBook, FaCog } from "react-icons/fa";
 import "../styles/dash.css";
+import Bookings from "../components/bookings";
+import Pooches from "../components/pooches";
+import { connect } from "react-redux";
 const { Header, Content, Sider } = Layout;
 
-export default class CustomerDash extends Component {
+class CustomerDash extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      content: null,
+      content: <Bookings user={this.props.user} />,
     };
   }
 
@@ -18,13 +21,17 @@ export default class CustomerDash extends Component {
     const changeContent = ({ key }) => {
       switch (key) {
         case "1":
-          return this.setState({ content: <div>Bookings</div> });
+          return this.setState({
+            content: <Bookings />,
+          });
         case "2":
-          return this.setState({ content:  <div>Pooches</div> });
+          return this.setState({ content: <Pooches /> });
         case "3":
-          return this.setState({ content:  <div>Settings</div> });
+          return this.setState({ content: <div>Settings</div> });
         default:
-          return this.setState({ content:  <div>Bookings</div> });
+          return this.setState({
+            content: <Bookings />,
+          });
       }
     };
     return (
@@ -83,3 +90,9 @@ export default class CustomerDash extends Component {
     );
   }
 }
+
+const mapStateToProps = (state) => {
+  const { user } = state;
+  return { user };
+};
+export default connect(mapStateToProps)(CustomerDash);
