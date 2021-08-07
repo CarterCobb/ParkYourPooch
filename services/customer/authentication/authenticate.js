@@ -42,7 +42,7 @@ export const authenticate = (req, res, next) => {
             const employeeClient = await Eureka.getClientByName(
               "employee-service"
             );
-            const employee = await employeeClient.get(`/api/employee/${data.id}`)
+            const employee = await employeeClient.get(`/employee/${data.id}`)
               .data.employee;
             req.user = employee;
             next();

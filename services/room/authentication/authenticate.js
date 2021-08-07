@@ -37,10 +37,8 @@ export const authenticate = (req, res, next) => {
             const customerClient = await Eureka.getClientByName(
               "customer-service"
             );
-            const customer = await customerClient.get(
-              `/api/customer/${data.id}`
-            ).data.customer;
-            req.user = customer;
+            const customer = await customerClient.get(`/customer/${data.id}`);
+            req.user = customer.data.customer;
             next();
           }
         } else {
@@ -51,10 +49,8 @@ export const authenticate = (req, res, next) => {
             const employeeClient = await Eureka.getClientByName(
               "employee-service"
             );
-            const employee = await employeeClient.get(
-              `/api/employee/${data.id}`
-            ).data.employee;
-            req.user = employee;
+            const employee = await employeeClient.get(`/employee/${data.id}`);
+            req.user = employee.data.employee;
             next();
           }
         }
