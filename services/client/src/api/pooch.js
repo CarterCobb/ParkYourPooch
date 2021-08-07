@@ -74,4 +74,56 @@ export default class Pooch {
       cb(null, { error: error.message });
     }
   }
+
+  /**
+   * Update a pooch
+   * @param {String} id pooch id
+   * @param {Object} payload items to update on pooch
+   * @param {Function} cb callback function (user, err)
+   * @returns
+   */
+  static async updatePoochById(id, payload, cb) {
+    try {
+      const token = ls.get("token");
+      const patch = await axios.patch(
+        `${api}/pooch/${id}`,
+        JSON.stringify(payload),
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (patch.status !== 200) {
+        try {
+          await User.getTokens((err) => {
+            if (err) return cb(null, err);
+          });
+          const token2 = ls.get("token");
+          const patch2 = await axios.patch(
+            `${api}/pooch/${id}`,
+            JSON.stringify(payload),
+            {
+              headers: {
+                Authorization: `Bearer ${token2}`,
+                "Content-Type": "application/json",
+              },
+            }
+          );
+          if (patch2.status !== 204) return cb(null, patch2.data._embedded);
+          await User.getUser((user, err) => {
+            return cb(user, err);
+          });
+        } catch (error) {
+          cb(null, { error: error.message });
+        }
+      }
+      await User.getUser((user, err) => {
+        return cb(user, err);
+      });
+    } catch (error) {
+      cb(null, { error: error.message });
+    }
+  }
 }
