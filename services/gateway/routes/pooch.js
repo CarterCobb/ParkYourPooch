@@ -77,11 +77,13 @@ export default [
             data: JSON.stringify(req.body),
             headers: { "Content-Type": "application/json" },
           });
-          if (item.status !== 201)
+          if (item.status !== 200)
             return res
               .status(item.status)
               .json(ResBody.errorJSON(item.status, item.data));
-          return res.sendStatus(item.status);
+          return res.status(item.status).json({
+            _embedded: { pooch: item.data.pooch },
+          });
         } catch (error) {
           return res.status(500).json(ResBody.errorJSON(500, error));
         }
