@@ -56,9 +56,10 @@ export default [
     handlers: [
       async (req, res) => {
         try {
-          if (connection.readyState === 1) await Pooch.create(req.body);
+          var pooch = null;
+          if (connection.readyState === 1) pooch = await Pooch.create(req.body);
           else return res.status(500).json({ error: "Database Error" });
-          return res.sendStatus(201);
+          return res.status(200).json({ pooch });
         } catch (err) {
           return res.status(500).json({ error: `error: ${err}` });
         }
