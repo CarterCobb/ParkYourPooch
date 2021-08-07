@@ -13,9 +13,7 @@ export default [
       async (req, res) => {
         try {
           const roomClient = await Eureka.getClientByName("room-service");
-          const items = await roomClient.get("/rooms", {
-            headers: { ...req.headers },
-          });
+          const items = await roomClient.get("/rooms");
           if (!items.data.rooms)
             return res
               .status(items.status)
