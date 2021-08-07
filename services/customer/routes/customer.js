@@ -1,12 +1,10 @@
 import mongoose from "mongoose";
 import Customer from "../models/customer.js";
-import Eureka from "../models/Eureka.js";
 import {
   authenticate,
   generateAccessToken,
   generateRefreshToken,
 } from "../authentication/authenticate.js";
-import { NODE_ENV } from "../keys.js";
 import bcrypt from "bcryptjs";
 const { connection } = mongoose;
 
@@ -46,17 +44,7 @@ export default [
             const customer = await Customer.findById(req.params.id).lean();
             if (!customer)
               return res.status(404).json({ error: "customer not found" });
-            if (NODE_ENV === "test") return res.status(200).json({ customer });
-            const pooches = [];
-            for (var pooch of customer.pooches) {
-              const pooch_client = await Eureka.getClientByName(
-                "pooch-service"
-              );
-              const full_pooch = await pooch_client.get(`/api/pooch/${pooch}`)
-                .data.pooch;
-              pooches.push(full_pooch);
-            }
-            return res.status(200).json({ customer: { ...customer, pooches } });
+            return res.status(200).json({ customer });
           } else return res.status(500).json({ error: "Database Error" });
         } catch (err) {
           return res.status(500).json({ error: `error: ${err}` });
