@@ -17,6 +17,7 @@ const Pooches = ({ user: store_user, dispatch }) => {
   const [pooches, setPooches] = useState([]);
   const [openModal, setOpenModal] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [editPooch, setEditPooch] = useState(null);
 
   useEffect(() => {
     setPooches([]);
@@ -36,6 +37,36 @@ const Pooches = ({ user: store_user, dispatch }) => {
         setLoading(false);
         setOpenModal(false);
         message.success("Created");
+      } else {
+        setLoading(false);
+        message.error(err.error);
+      }
+    });
+  };
+
+  const updatePooch = (values) => {
+    setLoading(true);
+    Pooch.updatePoochById(editPooch._id, values, (user, err) => {
+      if (!err) {
+        dispatch(setUser(user));
+        setLoading(false);
+        setEditPooch(null);
+        message.success("Saved");
+      } else {
+        setLoading(false);
+        message.error(err.error);
+      }
+    });
+  };
+
+  const deletePooch = (pooch) => {
+    setLoading(true);
+    Pooch.deletePoochById(pooch, (user, err) => {
+      if (!err) {
+        dispatch(setUser(user));
+        setLoading(false);
+        setOpenModal(false);
+        message.success("Deleted");
       } else {
         setLoading(false);
         message.error(err.error);
@@ -63,10 +94,19 @@ const Pooches = ({ user: store_user, dispatch }) => {
           <List.Item
             key={item._id}
             actions={[
-              <Button type="link" key="1">
+              <Button
+                type="link"
+                key={`${item}-1`}
+                onClick={() => setEditPooch({ ...item })}
+              >
                 Edit
               </Button>,
-              <Button danger type="link" key="2">
+              <Button
+                danger
+                type="link"
+                key={`${item}-2`}
+                onClick={() => deletePooch(item._id)}
+              >
                 Delete
               </Button>,
             ]}
@@ -107,6 +147,40 @@ const Pooches = ({ user: store_user, dispatch }) => {
               loading={loading}
             >
               Add
+            </Button>
+          </Form.Item>
+        </Form>
+      </Modal>
+      <Modal
+        title="Update Your Pooch"
+        visible={editPooch !== null}
+        onCancel={() => setEditPooch(null)}
+        footer={null}
+      >
+        <Form onFinish={updatePooch}>
+          <Form.Item
+            name="name"
+            rules={[
+              { required: true, message: "Please input your pooch's name." },
+            ]}
+            validateTrigger="onSubmit"
+            initialValue={editPooch && editPooch.name}
+          >
+            <Input placeholder="Name" />
+          </Form.Item>
+          <Form.Item name="notes" initialValue={editPooch && editPooch.notes}>
+            <Input placeholder="Notes" />
+          </Form.Item>
+          <Form.Item>
+            <Button
+              block
+              type="primary"
+              htmlType="submit"
+              shape="round"
+              size="large"
+              loading={loading}
+            >
+              Save
             </Button>
           </Form.Item>
         </Form>
