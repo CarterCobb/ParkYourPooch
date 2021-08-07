@@ -39,16 +39,16 @@ export default class User {
           await User.getTokens((err) => {
             if (err) return cb(null, err);
           });
-          const token = ls.get("token");
+          const token2 = ls.get("token");
           const get2 = await axios.get(`${api}/user`, {
-            headers: { Authorization: `Bearer ${token}` },
+            headers: { Authorization: `Bearer ${token2}` },
           });
           if (!get2.data._embedded.user) return cb(null, get2.data._embedded);
           cb(get2.data._embedded.user, null);
         } catch (error) {
           cb(null, { error: error.message });
         }
-        return cb(null, get.data._embedded);
+        cb(null, get.data._embedded);
       }
       cb(get.data._embedded.user, null);
     } catch (error) {
@@ -82,6 +82,7 @@ export default class User {
   static logout(cb) {
     ls.remove("token");
     ls.remove("refresh_token");
+    ls.remove("user");
     cb();
   }
 }
