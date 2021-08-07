@@ -11,11 +11,8 @@ export default [
     url: "/api/rooms",
     type: "get",
     handlers: [
-      authenticate,
-      async (req, res) => {
+      async (_req, res) => {
         try {
-          if (req.user.role === "CUSTOMER")
-            return res.status(403).json({ error: "employee only route" });
           if (connection.readyState === 1) {
             const rooms = await Room.find().lean();
             return res.status(200).json({ rooms });
