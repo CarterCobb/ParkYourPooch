@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Layout, Menu, Button } from "antd";
 import User from "../api/user";
 import { FaHome, FaBox, FaCog } from "react-icons/fa";
+import Rooms from "../components/rooms";
 import "../styles/dash.css";
 const { Header, Content, Sider } = Layout;
 
@@ -9,7 +10,7 @@ export default class EmployeeDash extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      content: null,
+      content: <div>Orders</div>,
     };
   }
 
@@ -20,7 +21,7 @@ export default class EmployeeDash extends Component {
         case "1":
           return this.setState({ content: <div>Orders</div> });
         case "2":
-          return this.setState({ content: <div>Rooms</div> });
+          return this.setState({ content: <Rooms /> });
         case "3":
           return this.setState({ content: <div>Settings</div> });
         default:
