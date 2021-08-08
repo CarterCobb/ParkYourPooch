@@ -36,7 +36,6 @@ export default [
   {
     url: "/api/v1/pooch/:id",
     type: "get",
-    cache: true,
     handlers: [
       async (req, res) => {
         try {
