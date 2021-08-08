@@ -34,7 +34,7 @@ export default class ResBody {
         error: "server error",
         code: 500,
         type: "SERVER_ERROR",
-        message: error.message,
+        message: error.message || error.error,
       },
     };
   }
@@ -47,10 +47,10 @@ export default class ResBody {
   static BAD_REQUEST(error) {
     return {
       _embedded: {
-        error: "bad request",
+        error: error.error || "bad request",
         code: 400,
         type: "BAD_REQUEST",
-        message: error.message,
+        message: error.message || error.error,
       },
     };
   }
@@ -66,7 +66,7 @@ export default class ResBody {
         error: "You are not authorized to access this endpoint.",
         code: 401,
         type: "NOT_AUTHORIZED",
-        message: error.message,
+        message: error.message || error.error,
       },
     };
   }
@@ -82,7 +82,7 @@ export default class ResBody {
         error: "You are forbiden from accessing this endpoint.",
         code: 403,
         type: "FORBIDEN",
-        message: error.message,
+        message: error.message || error.error,
       },
     };
   }
@@ -98,7 +98,7 @@ export default class ResBody {
         error: "entity not found",
         code: 404,
         type: "ENTITY_NOT_FOUND",
-        message: error.message,
+        message: error.message || error.error,
       },
     };
   }
