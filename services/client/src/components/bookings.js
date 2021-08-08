@@ -38,6 +38,8 @@ const Bookings = ({ user, dispatch }) => {
   const [customerBookings, setCustomerBookings] = useState([]);
   const [openModal, setOpenModal] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [roomOptions, setRoomOptions] = useState([]);
+  const [form] = Form.useForm();
 
   useEffect(() => {
     var mounted = true;
@@ -116,8 +118,33 @@ const Bookings = ({ user, dispatch }) => {
     );
   };
 
-  const onDateChange = (dates) =>
+  // var startdate = new Date("06/06/2013");
+  // var enddate = new Date("06/25/2013");
+  // var startD = new Date("06/08/2013");
+  // var endD = new Date("06/18/2013");
+
+  const isValidDateForRoom = (startdate, enddate, startD, endD) => {
+    return !(endD >= startdate && startD <= enddate);
+  };
+
+  const onDateChange = (dates) => {
     setBookingDays(dates[1].diff(dates[0], "days"));
+    form.resetFields(["room"]);
+    const options = [];
+    for (var room of rooms)
+      for (var booking of room.bookings)
+        if (
+          isValidDateForRoom(
+            new Date(booking.time[0]),
+            new Date(booking.time[1]),
+            dates[0].toDate(),
+            dates[1].toDate()
+          )
+        )
+          !options.map((x) => x._id).includes(room._id) &&
+            options.push(room);
+    setRoomOptions(options);
+  };
 
   const onUnbook = (room, pooch) => {
     setLoading(true);
@@ -144,14 +171,13 @@ const Bookings = ({ user, dispatch }) => {
     )
   );
 
-  let roomOptions = [];
-  rooms.forEach((room, i) =>
-    roomOptions.push(
-      <Select.Option key={i} value={room._id}>
-        {room.number}
-      </Select.Option>
-    )
-  );
+  // rooms.forEach((room, i) =>
+  //   roomOptions.push(
+  // <Select.Option key={i} value={room._id}>
+  //   {room.number}
+  // </Select.Option>
+  //   )
+  // );
 
   return (
     <Fragment>
@@ -236,7 +262,7 @@ const Bookings = ({ user, dispatch }) => {
         onCancel={toggleModal}
         footer={null}
       >
-        <Form onFinish={placeOrderForBooking}>
+        <Form onFinish={placeOrderForBooking} form={form}>
           <p style={{ textAlign: "center" }}>
             <strong>Bookings are $25 per day.</strong>
           </p>
@@ -268,7 +294,13 @@ const Bookings = ({ user, dispatch }) => {
               }),
             ]}
           >
-            <Select placeholder="Choose Room">{roomOptions}</Select>
+            <Select placeholder="Choose Room">
+              {roomOptions.map((room, i) => (
+                <Select.Option key={i} value={room._id}>
+                  {room.number}
+                </Select.Option>
+              ))}
+            </Select>
           </Form.Item>
           <Divider>Pooch</Divider>
           <Form.Item
