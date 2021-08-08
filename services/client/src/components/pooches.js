@@ -121,6 +121,10 @@ const Pooches = ({ user: store_user, dispatch }) => {
           >
             <Skeleton title={false} loading={loading} active>
               <List.Item.Meta title={item.name} description={item.notes} />
+              <span>
+                Age: {item.age}
+                {item.age === 1 ? " year" : " years"} old
+              </span>
             </Skeleton>
           </List.Item>
         )}
@@ -140,6 +144,15 @@ const Pooches = ({ user: store_user, dispatch }) => {
             validateTrigger="onSubmit"
           >
             <Input placeholder="Name" />
+          </Form.Item>
+          <Form.Item
+            name="age"
+            rules={[
+              { required: true, message: "Please input your pooch's age." },
+            ]}
+            validateTrigger="onSubmit"
+          >
+            <Input placeholder="Age" />
           </Form.Item>
           <Form.Item name="notes">
             <Input placeholder="Notes" />
@@ -174,6 +187,16 @@ const Pooches = ({ user: store_user, dispatch }) => {
             initialValue={editPooch && editPooch.name}
           >
             <Input placeholder="Name" />
+          </Form.Item>
+          <Form.Item
+            name="age"
+            rules={[
+              { required: true, message: "Please input your pooch's age." },
+            ]}
+            validateTrigger="onSubmit"
+            initialValue={editPooch && editPooch.age}
+          >
+            <Input placeholder="Age" />
           </Form.Item>
           <Form.Item name="notes" initialValue={editPooch && editPooch.notes}>
             <Input placeholder="Notes" />
