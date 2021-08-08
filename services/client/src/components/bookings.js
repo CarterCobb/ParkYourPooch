@@ -42,7 +42,7 @@ const Bookings = ({ user, dispatch }) => {
       Room.getAll((rms, err) => {
         if (err) message.error(err.error);
         else {
-          setRooms(typeof rms === "array" ? rms : []);
+          setRooms(rms);
           setCustomerBookings(
             (typeof rms === "array" ? rms : []).filter((x) =>
               x.bookings
@@ -53,11 +53,17 @@ const Bookings = ({ user, dispatch }) => {
             )
           );
           setPooches([]);
-          if (typeof user === "object")
-            for (var pooch of user.pooches)
-              Pooch.getPoochById(pooch).then(
-                (pooch) => pooch && setPooches((s) => [...s, pooch])
-              );
+          if (typeof user === "object") getPooches().then(setPooches);
+          async function getPooches() {
+            const pchs = [];
+            await Promise.all(
+              user.pooches.map(async (pooch) => {
+                const pch = await Pooch.getPoochById(pooch);
+                pchs.push(pch);
+              })
+            );
+            return pchs;
+          }
         }
         setLoading(false);
       });

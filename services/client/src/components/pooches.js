@@ -21,10 +21,17 @@ const Pooches = ({ user: store_user, dispatch }) => {
 
   useEffect(() => {
     setPooches([]);
-    for (var pooch of store_user.pooches)
-      Pooch.getPoochById(pooch).then(
-        (pooch) => pooch && setPooches((s) => [...s, pooch])
+    getPooches().then(setPooches);
+    async function getPooches() {
+      const pchs = [];
+      await Promise.all(
+        store_user.pooches.map(async (pooch) => {
+          const pch = await Pooch.getPoochById(pooch);
+          pchs.push(pch);
+        })
       );
+      return pchs;
+    }
   }, [store_user]);
 
   const toggleModal = () => setOpenModal(!openModal);
@@ -110,7 +117,7 @@ const Pooches = ({ user: store_user, dispatch }) => {
                 Delete
               </Button>,
             ]}
-            className="pooch-card"
+            className="list-card"
           >
             <Skeleton title={false} loading={loading} active>
               <List.Item.Meta title={item.name} description={item.notes} />
