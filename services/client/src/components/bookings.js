@@ -14,9 +14,12 @@ import {
 } from "antd";
 import Room from "../api/rooms";
 import Pooch from "../api/pooch";
+import Order from "../api/order";
+
 import { connect } from "react-redux";
 import { setUser } from "../redux/userActions";
 import moment from "moment";
+import User from "../api/user";
 const { RangePicker } = DatePicker;
 
 /**
@@ -42,16 +45,6 @@ const Bookings = ({ user, dispatch }) => {
       Room.getAll((rms, err) => {
         if (err) message.error(err.error);
         else {
-          setRooms(rms);
-          setCustomerBookings(
-            (typeof rms === "array" ? rms : []).filter((x) =>
-              x.bookings
-                .map((y) => y.pooch)
-                .forEach((z) => {
-                  return user.pooches.includes(z);
-                })
-            )
-          );
           setPooches([]);
           if (typeof user === "object") getPooches().then(setPooches);
           async function getPooches() {
@@ -64,6 +57,15 @@ const Bookings = ({ user, dispatch }) => {
             );
             return pchs;
           }
+          if (rms.constructor == Array) {
+            setRooms(rms);
+            setCustomerBookings([]);
+            for (var room of rms)
+              for (var booking of room.bookings)
+                for (var pooch of user.pooches)
+                  if (booking.pooch === pooch)
+                    setCustomerBookings((s) => [...s, booking]);
+          }
         }
         setLoading(false);
       });
@@ -71,12 +73,48 @@ const Bookings = ({ user, dispatch }) => {
     return () => (mounted = false);
   }, [user]);
 
-  console.log(customerBookings, pooches);
+  // console.log(rooms, customerBookings, pooches);
 
   const toggleModal = () => setOpenModal(!openModal);
 
   const placeOrderForBooking = (values) => {
-    console.log(values);
+    setLoading(true);
+    Order.createOrder(
+      {
+        name: user.name,
+        card_number: values.card_number,
+        cvv: values.cvv,
+        expires: values.expires,
+        total: bookingDays * 25 * 100,
+        booking_qty: bookingDays,
+      },
+      (err) => {
+        if (err) message.error(err.error.replace("_", " "));
+        else
+          Room.addBooking(
+            values.room,
+            {
+              pooch: values.pooch,
+              time: [
+                values.time[0].toDate().toISOString(),
+                values.time[1].toDate().toISOString(),
+              ],
+            },
+            (err2) => {
+              if (err2) message.error(err2.error);
+              else
+                User.getUser((user, err3) => {
+                  if (err3) message.error(err3.error);
+                  else {
+                    dispatch(setUser(user));
+                    toggleModal();
+                  }
+                });
+            }
+          );
+        setLoading(false);
+      }
+    );
   };
 
   const onDateChange = (dates) =>
@@ -131,24 +169,27 @@ const Bookings = ({ user, dispatch }) => {
             ? customerBookings
             : rooms.filter((x) => x.bookings.length > 0)
         }
-        renderItem={(item) => (
-          <List.Item
-            key={item._id}
-            actions={[
-              <Button type="link" key="1">
-                Edit
-              </Button>,
-              <Button danger type="link" key="2">
-                Delete
-              </Button>,
-            ]}
-          >
-            <Skeleton title={false} loading={loading} active>
-              <List.Item.Meta title={JSON.stringify(item)} description="" />
-              <div>content</div>
-            </Skeleton>
-          </List.Item>
-        )}
+        renderItem={(item) => {
+          const pooch = pooches.find((x) => x._id === item.pooch) || {};
+          return (
+            <List.Item
+              key={item._id}
+              actions={[
+                <Button type="link" key="1">
+                  Edit
+                </Button>,
+                <Button danger type="link" key="2">
+                  Delete
+                </Button>,
+              ]}
+              className="list-card"
+            >
+              <Skeleton title={false} loading={loading} active>
+                <List.Item.Meta title={pooch.name} description="" />
+              </Skeleton>
+            </List.Item>
+          );
+        }}
       />
       <Modal
         title="New Booking"
