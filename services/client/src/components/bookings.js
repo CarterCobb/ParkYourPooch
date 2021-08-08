@@ -73,8 +73,6 @@ const Bookings = ({ user, dispatch }) => {
     return () => (mounted = false);
   }, [user]);
 
-  // console.log(rooms, customerBookings, pooches);
-
   const toggleModal = () => setOpenModal(!openModal);
 
   const placeOrderForBooking = (values) => {
@@ -108,6 +106,7 @@ const Bookings = ({ user, dispatch }) => {
                   else {
                     dispatch(setUser(user));
                     toggleModal();
+                    message.success("Booked");
                   }
                 });
             }
@@ -119,6 +118,22 @@ const Bookings = ({ user, dispatch }) => {
 
   const onDateChange = (dates) =>
     setBookingDays(dates[1].diff(dates[0], "days"));
+
+  const onUnbook = (room, pooch) => {
+    setLoading(true);
+    Room.removeBooking(room, pooch, (err) => {
+      if (err) message.error(err.error);
+      else
+        User.getUser((user, err2) => {
+          if (err2) message.error(err2.error);
+          else {
+            dispatch(setUser(user));
+            message.success("Un-Booked");
+          }
+        });
+      setLoading(false);
+    });
+  };
 
   let poochOptions = [];
   pooches.forEach((pooch, i) =>
@@ -171,11 +186,19 @@ const Bookings = ({ user, dispatch }) => {
         }
         renderItem={(item) => {
           const pooch = pooches.find((x) => x._id === item.pooch) || {};
+          const room = rooms.find((x) =>
+            x.bookings.map((y) => y.pooch).includes(item.pooch)
+          );
           return (
             <List.Item
               key={item._id}
               actions={[
-                <Button danger type="link" key="1">
+                <Button
+                  danger
+                  type="link"
+                  key="1"
+                  onClick={() => onUnbook(room._id, item.pooch)}
+                >
                   Un-Book
                 </Button>,
               ]}
@@ -193,6 +216,15 @@ const Bookings = ({ user, dispatch }) => {
                     </span>
                   }
                 />
+                <span>
+                  Days:{" "}
+                  {moment(item.time[1]).diff(moment(item.time[0]), "days")}
+                  {" | "}
+                  Total:{" "}
+                  {formatter.format(
+                    moment(item.time[1]).diff(moment(item.time[0]), "days") * 25
+                  )}
+                </span>
               </Skeleton>
             </List.Item>
           );
