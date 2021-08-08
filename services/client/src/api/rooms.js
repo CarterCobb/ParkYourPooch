@@ -80,4 +80,38 @@ export default class Room {
       cb({ error: error.message });
     }
   }
+
+  /**
+   * Removes a booking for a pooch
+   * @param {String} room room id
+   * @param {String} pooch pooch id
+   * @param {Function} cb callback function (err)
+   */
+  static async removeBooking(room, pooch, cb) {
+    try {
+      const token = ls.get("token");
+      const del = await axios.delete(`${api}/room/${room}/unbook/${pooch}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (del.status !== 200) {
+        try {
+          await User.getTokens((err) => {
+            if (err) return cb(err);
+          });
+          const token2 = ls.get("token");
+          const del2 = await axios.delete(
+            `${api}/room/${room}/unbook/${pooch}`,
+            { headers: { Authorization: `Bearer ${token2}` } }
+          );
+          if (del2.status !== 200) return cb(del2.data._embedded);
+          cb(null);
+        } catch (error) {
+          cb({ error: error.message });
+        }
+      }
+      cb(null);
+    } catch (error) {
+      cb({ error: error.message });
+    }
+  }
 }
