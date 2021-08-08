@@ -175,17 +175,24 @@ const Bookings = ({ user, dispatch }) => {
             <List.Item
               key={item._id}
               actions={[
-                <Button type="link" key="1">
-                  Edit
-                </Button>,
-                <Button danger type="link" key="2">
-                  Delete
+                <Button danger type="link" key="1">
+                  Un-Book
                 </Button>,
               ]}
               className="list-card"
             >
               <Skeleton title={false} loading={loading} active>
-                <List.Item.Meta title={pooch.name} description="" />
+                <List.Item.Meta
+                  title={pooch.name}
+                  description={
+                    <span>
+                      <strong> From: </strong>
+                      {new Date(item.time[0]).toDateString()}
+                      <strong> To: </strong>
+                      {new Date(item.time[1]).toDateString()}
+                    </span>
+                  }
+                />
               </Skeleton>
             </List.Item>
           );
