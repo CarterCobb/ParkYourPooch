@@ -1,4 +1,4 @@
-# Park Your Pooch -**IN DEVELOPMENT**-
+# Park Your Pooch
 
 Built by Carter J. Cobb
 
