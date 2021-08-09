@@ -89,7 +89,16 @@ const Bookings = ({ user, dispatch }) => {
 
   const deleteRoom = (room) => {
     setLoading(true);
-    //Room delete functon to be made
+    Room.deleteRoomById(room, (user, err) => {
+      if (!err) {
+        dispatch(setUser(user));
+        setLoading(false);
+        message.success("Deleted");
+      } else {
+        setLoading(false);
+        message.error(err.error);
+      }
+    });
   };
 
   return (
