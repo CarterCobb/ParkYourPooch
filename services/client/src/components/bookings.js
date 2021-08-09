@@ -118,7 +118,7 @@ const Bookings = ({ user, dispatch }) => {
       }
     );
   };
-  
+
   const isValidDateForRoom = (startdate, enddate, startD, endD) => {
     return !(endD >= startdate && startD <= enddate);
   };
@@ -168,14 +168,6 @@ const Bookings = ({ user, dispatch }) => {
       </Select.Option>
     )
   );
-
-  // rooms.forEach((room, i) =>
-  //   roomOptions.push(
-  // <Select.Option key={i} value={room._id}>
-  //   {room.number}
-  // </Select.Option>
-  //   )
-  // );
 
   return (
     <Fragment>
