@@ -20,6 +20,7 @@ const Bookings = ({ user, dispatch }) => {
   const [pooches, setPooches] = useState([]);
   const [openModal, setOpenModal] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [editRoom, setEditRoom] = useState(null);
 
   useEffect(() => {
     var mounted = true;
@@ -54,8 +55,6 @@ const Bookings = ({ user, dispatch }) => {
     return () => (mounted = false);
   }, [user]);
 
-  console.log(pooches, rooms);
-
   const toggleModal = () => setOpenModal(!openModal);
 
   const createRoom = (values) => {
@@ -71,6 +70,26 @@ const Bookings = ({ user, dispatch }) => {
       } else message.error(err.error);
       setLoading(false);
     });
+  };
+
+  const updateRoom = (values) => {
+    setLoading(true);
+    Room.updateRoomById(editRoom._id, values, (user, err) => {
+      if (!err) {
+        dispatch(setUser(user));
+        setLoading(false);
+        setEditRoom(null);
+        message.success("Saved");
+      } else {
+        setLoading(false);
+        message.error(err.error);
+      }
+    });
+  };
+
+  const deleteRoom = (room) => {
+    setLoading(true);
+    //Room delete functon to be made
   };
 
   return (
@@ -97,10 +116,19 @@ const Bookings = ({ user, dispatch }) => {
               <Button type="link" key="1">
                 Bookings
               </Button>,
-              <Button type="link" key="2">
+              <Button
+                type="link"
+                key="2"
+                onClick={() => setEditRoom({ ...item })}
+              >
                 Edit
               </Button>,
-              <Button danger type="link" key="3">
+              <Button
+                danger
+                type="link"
+                key="3"
+                onClick={() => deleteRoom(item._id)}
+              >
                 Delete
               </Button>,
             ]}
@@ -109,7 +137,9 @@ const Bookings = ({ user, dispatch }) => {
             <Skeleton title={false} loading={loading} active>
               <List.Item.Meta
                 title={`Number - ${item.number}`}
-                description={`${item.bookings.length} Bookings`}
+                description={`${item.bookings.length} Booking${
+                  item.bookings.length === 1 ? "" : "s"
+                }`}
               />
             </Skeleton>
           </List.Item>
@@ -138,6 +168,34 @@ const Bookings = ({ user, dispatch }) => {
               loading={loading}
             >
               Create
+            </Button>
+          </Form.Item>
+        </Form>
+      </Modal>
+      <Modal
+        title="Update Room"
+        visible={editRoom !== null}
+        onCancel={() => setEditRoom(null)}
+        footer={null}
+      >
+        <Form onFinish={updateRoom}>
+          <Form.Item
+            name="number"
+            rules={[{ required: true, message: "Please set a room number" }]}
+            initialValue={editRoom && editRoom.number}
+          >
+            <Input placeholder="Room Number" />
+          </Form.Item>
+          <Form.Item>
+            <Button
+              block
+              type="primary"
+              htmlType="submit"
+              shape="round"
+              size="large"
+              loading={loading}
+            >
+              Save
             </Button>
           </Form.Item>
         </Form>
