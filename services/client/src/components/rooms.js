@@ -119,7 +119,6 @@ const Bookings = ({ user, dispatch }) => {
   const data =
     bookings &&
     bookings.books.map((booking) => {
-      console.log(booking, pooches);
       const pooch = pooches.find((x) => x._id === booking.pooch) || {};
       return {
         key: bookings.number,
