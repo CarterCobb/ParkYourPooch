@@ -3,6 +3,7 @@ import { Layout, Menu, Button } from "antd";
 import User from "../api/user";
 import { FaHome, FaBox, FaCog } from "react-icons/fa";
 import Rooms from "../components/rooms";
+import Orders from "../components/order";
 import "../styles/dash.css";
 const { Header, Content, Sider } = Layout;
 
@@ -10,7 +11,7 @@ export default class EmployeeDash extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      content: <div>Orders</div>,
+      content: <Orders />,
     };
   }
 
@@ -19,13 +20,13 @@ export default class EmployeeDash extends Component {
     const changeContent = ({ key }) => {
       switch (key) {
         case "1":
-          return this.setState({ content: <div>Orders</div> });
+          return this.setState({ content: <Orders /> });
         case "2":
           return this.setState({ content: <Rooms /> });
         case "3":
           return this.setState({ content: <div>Settings</div> });
         default:
-          return this.setState({ content: <div>Orders</div> });
+          return this.setState({ content: <Orders /> });
       }
     };
     return (
