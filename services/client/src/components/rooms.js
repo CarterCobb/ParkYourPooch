@@ -8,7 +8,7 @@ import {
   Modal,
   Form,
   Input,
-  Select,
+  Table,
 } from "antd";
 import Room from "../api/rooms";
 import Pooch from "../api/pooch";
@@ -21,6 +21,7 @@ const Bookings = ({ user, dispatch }) => {
   const [openModal, setOpenModal] = useState(false);
   const [loading, setLoading] = useState(true);
   const [editRoom, setEditRoom] = useState(null);
+  const [bookings, setBookings] = useState(null);
 
   useEffect(() => {
     var mounted = true;
@@ -29,25 +30,15 @@ const Bookings = ({ user, dispatch }) => {
         if (err) message.error(err.error);
         else {
           setRooms(rms);
-          setPooches([]);
           var pooch_ids = [];
           rms.forEach(
             (room) =>
               (pooch_ids = [...pooch_ids, ...room.bookings.map((x) => x.pooch)])
           );
-
-          setPooches([]);
-          if (typeof rms === "array") getPooches().then(setPooches);
-          async function getPooches() {
-            const pchs = [];
-            await Promise.all(
-              user.pooches.map(async (pooch) => {
-                const pch = await Pooch.getPoochById(pooch);
-                pchs.push(pch);
-              })
-            );
-            return pchs;
-          }
+          Pooch.getAllPooches((pchs, err) => {
+            if (!err) setPooches(pchs);
+            else message.error(err.error);
+          });
         }
         setLoading(false);
       });
@@ -101,6 +92,48 @@ const Bookings = ({ user, dispatch }) => {
     });
   };
 
+  const columns = [
+    {
+      title: "Pooch",
+      dataIndex: "pooch",
+      key: "pooch",
+      render: (text) => <span style={{ color: "#1890ff" }}>{text}</span>,
+    },
+    {
+      title: "From",
+      dataIndex: "from",
+      key: "from",
+    },
+    {
+      title: "To",
+      dataIndex: "to",
+      key: "to",
+    },
+    {
+      title: "Days",
+      dataIndex: "days",
+      key: "days",
+    },
+  ];
+
+  const data =
+    bookings &&
+    bookings.books.map((booking) => {
+      console.log(booking, pooches);
+      const pooch = pooches.find((x) => x._id === booking.pooch) || {};
+      return {
+        key: bookings.number,
+        pooch: pooch.name || "Pooch",
+        from: new Date(booking.time[0]).toDateString(),
+        to: new Date(booking.time[1]).toDateString(),
+        days: Math.round(
+          Math.abs(
+            (new Date(booking.time[0]) - new Date(booking.time[1])) / 86400000
+          )
+        ),
+      };
+    });
+
   return (
     <Fragment>
       <PageHeader
@@ -122,7 +155,18 @@ const Bookings = ({ user, dispatch }) => {
           <List.Item
             key={item._id}
             actions={[
-              <Button type="link" key="1">
+              <Button
+                type="link"
+                key="1"
+                onClick={() =>
+                  item.bookings.length > 0
+                    ? setBookings({
+                        number: item.number,
+                        books: item.bookings,
+                      })
+                    : message.warning("Room has no bookings")
+                }
+              >
                 Bookings
               </Button>,
               <Button
@@ -208,6 +252,15 @@ const Bookings = ({ user, dispatch }) => {
             </Button>
           </Form.Item>
         </Form>
+      </Modal>
+      <Modal
+        title={bookings && `Room ${bookings.number} Bookings`}
+        visible={bookings !== null}
+        onCancel={() => setBookings(null)}
+        footer={null}
+        style={{ minWidth: "70%" }}
+      >
+        <Table columns={columns} dataSource={data} />
       </Modal>
     </Fragment>
   );
