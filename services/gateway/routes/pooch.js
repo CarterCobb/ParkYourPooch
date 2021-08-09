@@ -16,7 +16,7 @@ export default [
           const items = await poochClient.get("/pooches", {
             headers: { ...req.headers },
           });
-          if (!items.data.poochs)
+          if (!items.data.pooches)
             return res
               .status(items.status)
               .json(ResBody.errorJSON(items.status, items.data));
