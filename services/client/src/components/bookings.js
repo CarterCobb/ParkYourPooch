@@ -109,6 +109,7 @@ const Bookings = ({ user, dispatch }) => {
                     dispatch(setUser(user));
                     toggleModal();
                     message.success("Booked");
+                    form.resetFields();
                   }
                 });
             }
@@ -132,17 +133,19 @@ const Bookings = ({ user, dispatch }) => {
     form.resetFields(["room"]);
     const options = [];
     for (var room of rooms)
-      for (var booking of room.bookings)
-        if (
-          isValidDateForRoom(
-            new Date(booking.time[0]),
-            new Date(booking.time[1]),
-            dates[0].toDate(),
-            dates[1].toDate()
+      if (room.bookings.length > 0) {
+        for (var booking of room.bookings)
+          if (
+            isValidDateForRoom(
+              new Date(booking.time[0]),
+              new Date(booking.time[1]),
+              dates[0].toDate(),
+              dates[1].toDate()
+            )
           )
-        )
-          !options.map((x) => x._id).includes(room._id) &&
-            options.push(room);
+            !options.map((x) => x._id).includes(room._id) && options.push(room);
+      } else
+        !options.map((x) => x._id).includes(room._id) && options.push(room);
     setRoomOptions(options);
   };
 
@@ -212,9 +215,10 @@ const Bookings = ({ user, dispatch }) => {
         }
         renderItem={(item) => {
           const pooch = pooches.find((x) => x._id === item.pooch) || {};
-          const room = rooms.find((x) =>
-            x.bookings.map((y) => y.pooch).includes(item.pooch)
-          );
+          const room =
+            rooms.find((x) =>
+              x.bookings.map((y) => y.pooch).includes(item.pooch)
+            ) || {};
           return (
             <List.Item
               key={item._id}
@@ -250,6 +254,7 @@ const Bookings = ({ user, dispatch }) => {
                   {formatter.format(
                     moment(item.time[1]).diff(moment(item.time[0]), "days") * 25
                   )}
+                  {" | "}Room:{room.number}
                 </span>
               </Skeleton>
             </List.Item>
