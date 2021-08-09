@@ -5,6 +5,7 @@ import { FaDog, FaBook, FaCog } from "react-icons/fa";
 import "../styles/dash.css";
 import Bookings from "../components/bookings";
 import Pooches from "../components/pooches";
+import Settings from "../components/cust-settings";
 import { connect } from "react-redux";
 const { Header, Content, Sider } = Layout;
 
@@ -27,7 +28,7 @@ class CustomerDash extends Component {
         case "2":
           return this.setState({ content: <Pooches /> });
         case "3":
-          return this.setState({ content: <div>Settings</div> });
+          return this.setState({ content: <Settings /> });
         default:
           return this.setState({
             content: <Bookings />,
