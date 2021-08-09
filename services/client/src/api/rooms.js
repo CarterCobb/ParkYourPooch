@@ -116,6 +116,42 @@ export default class Room {
   }
 
   /**
+   * Removes a room from the database. Will remove all bookings for rroom
+   * @param {String} id room id to remove
+   * @param {Function} cb callback function (user, err)
+   */
+  static async deleteRoomById(id, cb) {
+    try {
+      const token = ls.get("token");
+      const del = await axios.delete(`${api}/room/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (del.status !== 204) {
+        try {
+          await User.getTokens((err) => {
+            if (err) return cb(null, err);
+          });
+          const token2 = ls.get("token");
+          const del2 = await axios.delete(`${api}/room/${id}`, {
+            headers: { Authorization: `Bearer ${token2}` },
+          });
+          if (del2.status !== 204) return cb(null, del2.data._embedded);
+          await User.getUser((user, err) => {
+            return cb(user, err);
+          });
+        } catch (error) {
+          cb(null, { error: error.message });
+        }
+      }
+      await User.getUser((user, err) => {
+        return cb(user, err);
+      });
+    } catch (error) {
+      cb(null, { error: error.message });
+    }
+  }
+
+  /**
    * Updates a room
    * @param {String} id room ide
    * @param {Object} payload update properties
