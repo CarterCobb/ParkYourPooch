@@ -25,6 +25,36 @@ export default class Pooch {
   }
 
   /**
+   * Get all the pooches
+   * @param {Function} cb callback function (pooches, err)
+   */
+  static async getAllPooches(cb) {
+    try {
+      const token = ls.get("token");
+      const get = await axios.get(`${api}/poochs`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (get.status !== 200) {
+        try {
+          await User.getTokens((err) => {
+            if (err) return cb(null, err);
+          });
+          const token2 = ls.get("token");
+          const get2 = await axios.get(`${api}/poochs`, {
+            headers: { Authorization: `Bearer ${token2}` },
+          });
+          if (get2.status !== 200) return cb(null, get2.data._embedded);
+          cb(get2.data._embedded.pooches, null);
+        } catch (error) {
+          cb(null, { error: error.message });
+        }
+      } else cb(get.data._embedded.pooches, null);
+    } catch (error) {
+      cb(null, { error: error.message });
+    }
+  }
+
+  /**
    * Get a pooch by its id
    * @param {String} id
    * @returns {Object} pooch
