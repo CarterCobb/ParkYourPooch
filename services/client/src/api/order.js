@@ -27,7 +27,7 @@ export default class Order {
 
   /**
    * Get all the orders
-   * @param {Function} cb callbacj function (orders, err)
+   * @param {Function} cb callback function (orders, err)
    */
   static async getAllOrders(cb) {
     try {
