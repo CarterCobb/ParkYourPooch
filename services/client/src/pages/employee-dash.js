@@ -4,6 +4,7 @@ import User from "../api/user";
 import { FaHome, FaBox, FaCog } from "react-icons/fa";
 import Rooms from "../components/rooms";
 import Orders from "../components/order";
+import Settings from "../components/emp-settings";
 import "../styles/dash.css";
 const { Header, Content, Sider } = Layout;
 
@@ -24,7 +25,7 @@ export default class EmployeeDash extends Component {
         case "2":
           return this.setState({ content: <Rooms /> });
         case "3":
-          return this.setState({ content: <div>Settings</div> });
+          return this.setState({ content: <Settings /> });
         default:
           return this.setState({ content: <Orders /> });
       }
