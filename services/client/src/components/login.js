@@ -21,6 +21,7 @@ const Login = ({ size, className }) => {
       },
       (err) => {
         if (err) {
+          console.log(err)
           message.error(err.error);
           setLoading(false);
         } else

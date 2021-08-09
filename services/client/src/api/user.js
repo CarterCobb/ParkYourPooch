@@ -71,7 +71,11 @@ export default class User {
       ls.set("refresh_token", post.data._embedded.refresh_token);
       cb(null);
     } catch (error) {
-      cb({ error: error.message });
+      cb({
+        error: error.response
+          ? error.response.data._embedded.message
+          : error.message,
+      });
     }
   }
 
