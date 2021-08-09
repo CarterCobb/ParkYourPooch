@@ -118,12 +118,7 @@ const Bookings = ({ user, dispatch }) => {
       }
     );
   };
-
-  // var startdate = new Date("06/06/2013");
-  // var enddate = new Date("06/25/2013");
-  // var startD = new Date("06/08/2013");
-  // var endD = new Date("06/18/2013");
-
+  
   const isValidDateForRoom = (startdate, enddate, startD, endD) => {
     return !(endD >= startdate && startD <= enddate);
   };
