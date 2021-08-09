@@ -59,7 +59,7 @@ const Bookings = ({ user, dispatch }) => {
             );
             return pchs;
           }
-          if (rms.constructor == Array) {
+          if (rms.constructor === Array) {
             setRooms(rms);
             setCustomerBookings([]);
             for (var room of rms)
