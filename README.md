@@ -4,7 +4,7 @@ Built by Carter J. Cobb
 
 ## Details
 
-This project uses Node.js, Express.js, React.js, and MongoDB to build a microserviced api and client. Requirements this project satifies are as follows:
+This project uses Node.js, Express.js, React.js, MongoDB, Redis, Redux, JSON Web Token, Eureka, NGINX, and Docker to build a microserviced api and client. Requirements this project satifies are as follows:
 
 ### Business Requirements
 
