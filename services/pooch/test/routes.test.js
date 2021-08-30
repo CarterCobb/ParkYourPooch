@@ -63,7 +63,7 @@ describe("Unit Testing -> Pooches", () => {
       .catch(done);
   });
 
-  it("should return Created status on POST /api/pooch", (done) => {
+  it("should return OK status on POST /api/pooch", (done) => {
     request(app)
       .post("/api/pooch")
       .send({
@@ -72,7 +72,7 @@ describe("Unit Testing -> Pooches", () => {
         notes: "he likes to be outside",
       })
       .then((res) => {
-        assert.strictEqual(res.status, 201);
+        assert.strictEqual(res.status, 200);
         Pooch.deleteOne({ _id: 123456 })
           .then(() => done())
           .catch(done);
